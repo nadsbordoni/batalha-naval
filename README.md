@@ -35,6 +35,12 @@ gcc tests/main_test.c src/board.c src/fleet.c -o test
 Testes no dia 23/11:
 <img width="1037" height="546" alt="Captura de Tela 2025-11-23 às 21 25 33" src="https://github.com/user-attachments/assets/d578ae15-1a39-4135-a2a2-695e15b3e580" />
 
+Testes dia 24/11:
+
+<img width="762" height="526" alt="Captura de Tela 2025-11-23 às 23 07 14" src="https://github.com/user-attachments/assets/1f8ba7de-a6d9-4ad8-a133-64537a52f93f" />
+<img width="607" height="597" alt="Captura de Tela 2025-11-23 às 23 07 22" src="https://github.com/user-attachments/assets/03a4b392-83e6-478f-b65d-44e070939894" />
+
+
 ---
 ## Roadmap do projeto
 
