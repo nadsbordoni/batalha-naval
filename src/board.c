@@ -1,25 +1,30 @@
-// board.c
+#include "board.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "board.h"
 
-Board *create_board(int rows, int cols) {
-    if (rows <= 0 || cols <= 0) return NULL;
+
+Board *create_board(int size) {
+    if (size < MIN_BOARD_SIZE || size > MAX_BOARD_SIZE) {
+        fprintf(stderr,
+                "[ERRO] create_board: tamanho inválido (%d). Deve ser entre %d e %d\n",
+                size, MIN_BOARD_SIZE, MAX_BOARD_SIZE);
+        return NULL;
+    }
 
     Board *b = malloc(sizeof(Board));
     if (!b) return NULL;
 
-    b->rows = rows;
-    b->cols = cols;
+    b->rows = size;
+    b->cols = size;
 
-    b->cells = malloc(rows * cols * sizeof(Cell));
+    b->cells = calloc((size_t)size * (size_t)size, sizeof(Cell));
     if (!b->cells) {
         free(b);
         return NULL;
     }
 
-    // Inicializa todas as células como água
-    for (int i = 0; i < rows * cols; i++) {
+    // Inicializa todas as células como água e sem navio
+    for (int i = 0; i < size * size; i++) {
         b->cells[i].state = WATER_CELL;
         b->cells[i].ship_id = NO_SHIP_ID;
     }
@@ -36,7 +41,6 @@ void destroy_board(Board *b) {
 Cell *get_cell(Board *b, int row, int col) {
     if (!b) return NULL;
 
-    // Verifica se os índices estão dentro dos limites do tabuleiro 
     if (row < 0 || row >= b->rows) return NULL;
     if (col < 0 || col >= b->cols) return NULL;
 
@@ -44,7 +48,6 @@ Cell *get_cell(Board *b, int row, int col) {
     return &b->cells[index];
 }
 
-// A ideia é printar o tabuleiro com as letras e numeros, como era no papel (pelo menos era quando eu jogava)
 void print_board(Board *b, bool showShips) {
     if (!b) return;
 
@@ -70,19 +73,15 @@ void print_board(Board *b, bool showShips) {
                     case WATER_CELL:
                         ch = '~';
                         break;
-
                     case SHIP_INTACT_CELL:
                         ch = showShips ? 'S' : '~';
                         break;
-
                     case SHIP_DAMAGED_CELL:
                         ch = 'X';
                         break;
-
                     case SHOT_MISS_CELL:
                         ch = '.';
                         break;
-
                     default:
                         ch = '?';
                         break;

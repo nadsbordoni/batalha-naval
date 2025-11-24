@@ -5,6 +5,10 @@
 
 #define NO_SHIP_ID -1
 
+// Tamanhos do tabuleiro segundo enunciado do professor (podemos mudar depois)
+#define MIN_BOARD_SIZE 6
+#define MAX_BOARD_SIZE 26
+
 //Foram os cases mais auto explicativos que consegui pensar
 typedef enum {
     WATER_CELL,
@@ -27,7 +31,7 @@ typedef struct {
 } Board;
 
 
-Board *create_board(int rows, int cols);
+Board *create_board(int size);
 void destroy_board(Board *b);
 Cell *get_cell(Board *b, int row, int col);
 void print_board(Board *b, bool showShips);

@@ -8,7 +8,7 @@ int main() {
     printf("=== TESTE INICIAL DO PROJETO ===\n\n");
 
     // 1. Criar tabuleiro
-    Board *b = create_board(10, 10);
+    Board *b = create_board(10);
     if (!b) {
         printf("Erro ao criar o tabuleiro!\n");
         return 1;
