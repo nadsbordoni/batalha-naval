@@ -9,8 +9,6 @@ O objetivo é implementar o clássico jogo Batalha Naval utilizando exclusivamen
 - **Nádia Bordoni**  
 - **Pedro Gabriel**
 
----
-
 ## Descrição Geral do Projeto
 Este projeto consiste em implementar o jogo **Batalha Naval**, seguindo as regras tradicionais:
 
@@ -35,47 +33,27 @@ gcc tests/main_test.c src/board.c src/fleet.c -o test
 ```
 
 Testes no dia 23/11:
-[Colocar imagem do print do terminal]
+<img width="1037" height="546" alt="Captura de Tela 2025-11-23 às 21 25 33" src="https://github.com/user-attachments/assets/d578ae15-1a39-4135-a2a2-695e15b3e580" />
 
 ---
-## Estrutura do Projeto
-src/
-  board.h       # estrutura do tabuleiro
-  board.c       # criar, destruir, acessar e imprimir tabuleiro
-
-  fleet.h       # estrutura de navio e frota
-  fleet.c       # criação da frota padrão e desalocação
-
-  game.h        # (a implementar)
-  game.c        # (a implementar)
-
-  io.h          # (a implementar)
-  io.c          # (a implementar)
-
-  random.h      # (a implementar)
-  random.c      # (a implementar)
-
-tests/
-  main_test.c   # arquivo para testes incrementais
-
 ## Roadmap do projeto
 
-### ✔️ **Fase 1 — Módulos Fundamentais**
+### **Fase 1 — Módulos Fundamentais**
 - [x] `board`: criação, destruição, impressão e acesso a células  
 - [x] `fleet`: criação da frota padrão e liberação  
 - [x] Teste inicial com `main_test.c`
 
-### 🔜 **Fase 2 — Posicionamento dos Navios** 
+### **Fase 2 — Posicionamento dos Navios** 
 - [ ] Posicionamento automático (aleatório)  
 - [ ] Posicionamento manual via `io.c`
 
-### 🔜 **Fase 3 — Sistema de Tiros**
+### **Fase 3 — Sistema de Tiros**
 - [ ] Detectar navio afundado  
 - [ ] Detectar fim de jogo
 
-### 🔜 **Fase 4 — Interface do Jogo**
+### **Fase 4 — Interface do Jogo**
 - [ ] 
 
-### 🔜 **Fase 5 — Extensões e Melhorias**
+### **Fase 5 — Extensões e Melhorias**
 - [ ] Tamanho de tabuleiro configurável  
 - [ ] Frota customizável 
