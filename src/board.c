@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-
+// Criação do tabuleiro (dinâmico)
 Board *create_board(int size) {
-    if (size < MIN_BOARD_SIZE || size > MAX_BOARD_SIZE) {
+    if (size < MIN_BOARD_SIZE_SMALL || size > MAX_BOARD_SIZE_HUGE) {
         fprintf(stderr,
             "[ERRO] create_board: tamanho inválido (%d). Deve ser entre %d e %d\n",
-            size, MIN_BOARD_SIZE, MAX_BOARD_SIZE);
+            size, MIN_BOARD_SIZE_SMALL, MAX_BOARD_SIZE_HUGE);
         return NULL;
     }
 
@@ -33,12 +33,14 @@ Board *create_board(int size) {
     return b;
 }
 
+// -------------------------------------------------------------
 void destroy_board(Board *b) {
     if (!b) return;
     free(b->cells);
     free(b);
 }
 
+// -------------------------------------------------------------
 Cell *get_cell(Board *b, int row, int col) {
     if (!b) return NULL;
 
@@ -48,6 +50,7 @@ Cell *get_cell(Board *b, int row, int col) {
     return &b->cells[row * b->cols + col];
 }
 
+// -------------------------------------------------------------
 void print_board(Board *b, bool showShips) {
     if (!b) return;
 
@@ -68,25 +71,11 @@ void print_board(Board *b, bool showShips) {
                 ch = '!';
             } else {
                 switch (cell->state) {
-                    case WATER_CELL:
-                        ch = '~';
-                        break;
-
-                    case SHIP_INTACT_CELL:
-                        ch = showShips ? 'S' : '~';
-                        break;
-
-                    case SHIP_DAMAGED_CELL:
-                        ch = 'X';
-                        break;
-
-                    case SHOT_MISS_CELL:
-                        ch = '.';
-                        break;
-
-                    default:
-                        ch = '?';
-                        break;
+                    case WATER_CELL:         ch = '~'; break;
+                    case SHIP_INTACT_CELL:   ch = showShips ? 'S' : '~'; break;
+                    case SHIP_DAMAGED_CELL:  ch = 'X'; break;
+                    case SHOT_MISS_CELL:     ch = '.'; break;
+                    default:                 ch = '?'; break;
                 }
             }
 
@@ -96,10 +85,12 @@ void print_board(Board *b, bool showShips) {
     }
 }
 
+// -------------------------------------------------------------
 static bool in_bounds(Board *b, int row, int col) {
     return b && row >= 0 && row < b->rows && col >= 0 && col < b->cols;
 }
 
+// -------------------------------------------------------------
 bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) {
     if (!b || length <= 0) return false;
 
@@ -115,7 +106,7 @@ bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) 
         if (main_cell->ship_id != NO_SHIP_ID)
             return false;
 
-        // Verificar 8-vizinhos (regra de não encostar)
+        // 8-vizinhos (não encostar)
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
                 int nr = rr + dr;
@@ -135,9 +126,10 @@ bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) 
     return true;
 }
 
+// -------------------------------------------------------------
 bool place_ship(Board *b, Fleet *fleet, int ship_index, int row, int col, Orientation orient) {
     if (!b || !fleet) return false;
-    if (ship_index < 0 || ship_index >= fleet->totalShips) return false;
+    if (ship_index < 0 || ship_index >= fleet->count) return false;
 
     int length = fleet->ships[ship_index].length;
 
@@ -157,8 +149,13 @@ bool place_ship(Board *b, Fleet *fleet, int ship_index, int row, int col, Orient
     return true;
 }
 
+// -------------------------------------------------------------
 bool place_fleet_random(Board *b, Fleet *fleet) {
     if (!b || !fleet) return false;
+
+    // Reset de placed (boa prática)
+    for (int i = 0; i < fleet->count; i++)
+        fleet->ships[i].placed = 0;
 
     static int seeded = 0;
     if (!seeded) {
@@ -166,7 +163,7 @@ bool place_fleet_random(Board *b, Fleet *fleet) {
         seeded = 1;
     }
 
-    for (int s = 0; s < fleet->totalShips; s++) {
+    for (int s = 0; s < fleet->count; s++) {
         int length = fleet->ships[s].length;
         bool placed = false;
 

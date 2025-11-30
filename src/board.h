@@ -4,9 +4,15 @@
 #include "fleet.h"
 #include <stdbool.h>
 
-// Limites definidos pelo professor em PDF
-#define MIN_BOARD_SIZE 6
-#define MAX_BOARD_SIZE 26
+// Limites de acordo com a faixa de tamanho
+#define MIN_BOARD_SIZE_SMALL 6
+#define MAX_BOARD_SIZE_SMALL 10
+#define MIN_BOARD_SIZE_MEDIUM 11
+#define MAX_BOARD_SIZE_MEDIUM 15
+#define MIN_BOARD_SIZE_BIG 16
+#define MAX_BOARD_SIZE_BIG 20
+#define MIN_BOARD_SIZE_HUGE 21
+#define MAX_BOARD_SIZE_HUGE 26
 
 #define NO_SHIP_ID -1
 
