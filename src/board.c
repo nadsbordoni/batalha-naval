@@ -33,14 +33,12 @@ Board *create_board(int size) {
     return b;
 }
 
-// -------------------------------------------------------------
 void destroy_board(Board *b) {
     if (!b) return;
     free(b->cells);
     free(b);
 }
 
-// -------------------------------------------------------------
 Cell *get_cell(Board *b, int row, int col) {
     if (!b) return NULL;
 
@@ -50,7 +48,6 @@ Cell *get_cell(Board *b, int row, int col) {
     return &b->cells[row * b->cols + col];
 }
 
-// -------------------------------------------------------------
 void print_board(Board *b, bool showShips) {
     if (!b) return;
 
@@ -85,12 +82,10 @@ void print_board(Board *b, bool showShips) {
     }
 }
 
-// -------------------------------------------------------------
 static bool in_bounds(Board *b, int row, int col) {
     return b && row >= 0 && row < b->rows && col >= 0 && col < b->cols;
 }
 
-// -------------------------------------------------------------
 bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) {
     if (!b || length <= 0) return false;
 
@@ -106,7 +101,6 @@ bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) 
         if (main_cell->ship_id != NO_SHIP_ID)
             return false;
 
-        // 8-vizinhos (não encostar)
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
                 int nr = rr + dr;
@@ -126,7 +120,6 @@ bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) 
     return true;
 }
 
-// -------------------------------------------------------------
 bool place_ship(Board *b, Fleet *fleet, int ship_index, int row, int col, Orientation orient) {
     if (!b || !fleet) return false;
     if (ship_index < 0 || ship_index >= fleet->count) return false;
@@ -149,11 +142,9 @@ bool place_ship(Board *b, Fleet *fleet, int ship_index, int row, int col, Orient
     return true;
 }
 
-// -------------------------------------------------------------
 bool place_fleet_random(Board *b, Fleet *fleet) {
     if (!b || !fleet) return false;
 
-    // Reset de placed (boa prática)
     for (int i = 0; i < fleet->count; i++)
         fleet->ships[i].placed = 0;
 

@@ -40,7 +40,7 @@ void print_two_boards(Game *g) {
     print_board(g->p2.shots, true);
 }
 
-// MENU DE CONFIGURAÇÕES
+// menu de configurações
 
 int settings_menu(int *board_size) {
     clear_screen();
@@ -65,7 +65,7 @@ int settings_menu(int *board_size) {
     return *board_size;
 }
 
-// JOGO PRINCIPAL
+// Jogo principal
 
 void play_game(int board_size) {
     clear_screen();

@@ -39,13 +39,11 @@ Game *create_game(const char *name1, const char *name2, int board_size, bool aut
     g->winner = 0;
 
     // inicializa jogadores
-    // P1
     if (name1)
         snprintf(g->p1.name, sizeof(g->p1.name), "%s", name1);
     else
         snprintf(g->p1.name, sizeof(g->p1.name), "Jogador1");
 
-    // P2
     if (name2)
         snprintf(g->p2.name, sizeof(g->p2.name), "%s", name2);
     else
@@ -106,7 +104,7 @@ void destroy_game(Game *g) {
     if (g->p2.board) destroy_board(g->p2.board);
     if (g->p2.shots) destroy_board(g->p2.shots);
 
-    // liberar frotas (destroy_fleet libera o ponteiro)
+    // liberar frotas
     if (g->p1.fleet) destroy_fleet(g->p1.fleet);
     if (g->p2.fleet) destroy_fleet(g->p2.fleet);
 
@@ -157,12 +155,12 @@ int check_victory(Game *g) {
 
     if (is_fleet_destroyed(&g->p1)) {
         g->game_over = true;
-        g->winner = 2; // p2 ganhou
+        g->winner = 2; 
         return 2;
     }
     if (is_fleet_destroyed(&g->p2)) {
         g->game_over = true;
-        g->winner = 1; // p1 ganhou
+        g->winner = 1;
         return 1;
     }
 
@@ -171,7 +169,7 @@ int check_victory(Game *g) {
 }
 
 
-//switch_turn
+//alterna turno
 void switch_turn(Game *g) {
     if (!g) return;
     g->current_player = (g->current_player == 1) ? 2 : 1;
@@ -180,13 +178,10 @@ void switch_turn(Game *g) {
 bool auto_place_player_fleet(Player *p) {
     if (!p || !p->fleet || !p->board) return false;
 
-    // limpar board antes de tentar
     for (int i = 0; i < p->board->rows * p->board->cols; i++) {
         p->board->cells[i].state = WATER_CELL;
         p->board->cells[i].ship_id = NO_SHIP_ID;
     }
-
-    // place_fleet_random já zera placed internamente conforme board.c
     bool ok = place_fleet_random(p->board, p->fleet);
     return ok;
 }
@@ -198,8 +193,6 @@ int fire_shot(Game *g, int shooter, int row, int col, char *result_text, size_t 
     Player *attacker = get_player(g, shooter);
     Player *target = get_opponent(g, shooter);
     if (!attacker || !target) return -1;
-
-    // validar coordenadas dentro do tabuleiro
     if (!in_bounds(target->board, row, col)) {
         if (result_text && bufsize > 0) snprintf(result_text, bufsize, "Coordenada fora do tabuleiro.");
         return -1;
@@ -208,14 +201,11 @@ int fire_shot(Game *g, int shooter, int row, int col, char *result_text, size_t 
     Cell *target_cell = get_cell(target->board, row, col);
     Cell *attacker_shot_cell = get_cell(attacker->shots, row, col);
     if (!target_cell || !attacker_shot_cell) return -1;
-
-    // verificar jogada repetida
     if (target_cell->state == SHIP_DAMAGED_CELL || target_cell->state == SHOT_MISS_CELL) {
         if (result_text && bufsize > 0) snprintf(result_text, bufsize, "Coordenada ja atingida.");
         return -1;
     }
 
-    // incrementar tiro do atacante
     attacker->total_shots++;
 
     // Verificar se há navio na célula
@@ -230,7 +220,6 @@ int fire_shot(Game *g, int shooter, int row, int col, char *result_text, size_t 
         // acerto
         int sid = target_cell->ship_id;
         if (sid < 0 || sid >= target->fleet->count) {
-            // inconsistente
             if (result_text && bufsize > 0) snprintf(result_text, bufsize, "Erro interno: ship_id inválido.");
             return -1;
         }
@@ -249,7 +238,7 @@ int fire_shot(Game *g, int shooter, int row, int col, char *result_text, size_t 
         if (ship->hits >= ship->length) {
             if (result_text && bufsize > 0)
                 snprintf(result_text, bufsize, "AFUNDOU %s!", ship->name);
-            // depois do afundamento, podemos checar vitória
+            // depois do afundamento checa vitória
             check_victory(g);
         } else {
             if (result_text && bufsize > 0)

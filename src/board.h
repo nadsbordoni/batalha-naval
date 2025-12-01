@@ -16,7 +16,6 @@
 
 #define NO_SHIP_ID -1
 
-// Foram os melhores cases que consegui pensar - melhor descrito
 typedef enum {
     WATER_CELL,
     SHIP_INTACT_CELL,

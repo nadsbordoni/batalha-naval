@@ -4,7 +4,7 @@
 #include "fleet.h"
 #include "board.h"
 
-// Função auxiliar: adiciona navio usando realloc
+//Adiciona navio usando realloc
 
 static void add_ship(Fleet *f, const char *name, int length) {
     f->count++;
@@ -34,7 +34,7 @@ static void add_minimum_fleet(Fleet *f) {
     add_ship(f, "Destroyer", 2);
 }
 
-// Criação da frota padrão (10x10) — AGORA COM MALLOC
+// Criação da frota padrão
 
 Fleet *create_default_fleet(void) {
     Fleet *f = malloc(sizeof(Fleet));
@@ -85,7 +85,7 @@ static void add_interval_4(Fleet *f) {
     for (int i = 0; i < 18; i++) add_ship(f, "Destroyer", 2);
 }
 
-// Cria frota dinâmica, com malloc, conforme o tamanho
+// Cria frota dinâmica
 
 Fleet *create_fleet(int boardSize) {
     Fleet *f = malloc(sizeof(Fleet));
@@ -116,10 +116,8 @@ Fleet *create_fleet(int boardSize) {
 
     return f;
 }
-
-// -------------------------------------------------------
 // Libera memória da frota
-// -------------------------------------------------------
+
 void destroy_fleet(Fleet *fleet) {
     if (!fleet) return;
 

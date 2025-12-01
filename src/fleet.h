@@ -15,10 +15,9 @@ typedef struct {
     int count;
 } Fleet;
 
-// Cria e retorna ponteiro para frota padrão (tabuleiro 10x10)
+// Cria frota padrão
 Fleet *create_default_fleet(void);
-
-// Cria e retorna ponteiro para frota proporcional (tamanho 6–26)
+// Cria frota tabuleiro personalizado
 Fleet *create_fleet(int boardSize);
 
 // Libera frota criada dinamicamente
