@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Criação do tabuleiro (dinâmico)
+// Criação do tabuleiro dinâmico
 Board *create_board(int size) {
     if (size < MIN_BOARD_SIZE_SMALL || size > MAX_BOARD_SIZE_HUGE) {
         fprintf(stderr,

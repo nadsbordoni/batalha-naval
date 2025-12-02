@@ -1,50 +1,43 @@
 #include <stdlib.h>
 #include <time.h>
-#include "rnd.h"
+#include "random.h"
 
-void num_rand(void) {
-    srand((unsigned int)time(0));
-}
-
-void seed_esp(unsigned int seed) {
+void random_set_seed(unsigned int seed) {
     srand(seed);
 }
 
-int numb_rando(int min, int max) {
+int random_int_range(int min, int max) {
     if (min > max) {
         int temp = min;
         min = max;
         max = temp;
     }
-    
-    return min + rand() % (max - min + 1);
+    return min + (rand() % (max - min + 1));
 }
 
-int range_random(int max) {
-    if (max <= 0) {
-        return 0;
-    }
-    
+int random_index(int max) {
+    if (max <= 1) return 0;
     return rand() % max;
 }
 
-bool bool_random(void) {
-    return (rand() % 2) == 1;
-}
-
-int binary_random(void) {
+bool random_bool(void) {
     return rand() % 2;
 }
 
-float floa_random(void) {
-    return (float)rand() / (float)RAND_MAX;
+int random_bit(void) {
+    return rand() % 2;
 }
 
-void return_tabuleiro(int board_size, int *row, int *col) {
-    *row = rnd_range(board_size);
-    *col = rnd_range(board_size);
+float random_float(void) {
+    return (float)rand() / (float)(RAND_MAX + 1.0);
+}
+
+void random_board_coord(int board_size, int *row, int *col) {
+    if (!row || !col || board_size <= 0) return;
+    *row = random_index(board_size);
+    *col = random_index(board_size);
 }
 
 int return_number(void) {
-    return rnd_binary();
+    return random_bit();
 }

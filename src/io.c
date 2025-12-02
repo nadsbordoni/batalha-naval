@@ -1,4 +1,3 @@
-/* src/io.c — centraliza toda a entrada/saída e o loop de jogo */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,7 +46,7 @@ int settings_menu(int *board_size) {
     printf("Configurações\n\n");
     printf("Tamanho atual: %d x %d\n\n", *board_size, *board_size);
 
-    printf("Novo tamanho (6 a 26): ");
+    printf("Novo tamanho (%d a %d): ", MIN_BOARD_SIZE_SMALL, MAX_BOARD_SIZE_HUGE);
     int novo;
 
     if (scanf("%d", &novo) != 1) {
@@ -61,7 +60,7 @@ int settings_menu(int *board_size) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
 
-    if (novo < 6 || novo > 26) {
+    if (novo < MIN_BOARD_SIZE_SMALL || novo > MAX_BOARD_SIZE_HUGE) {
         printf("Valor fora do intervalo.\n");
         pause_screen();
         return *board_size;
@@ -116,7 +115,6 @@ void play_game(int board_size) {
         }
         entrada[strcspn(entrada, "\n")] = '\0';
 
-        /* usa a função pública parse_coord definida em game.c */
         if (!parse_coord(entrada, &row, &col)) {
             printf("Entrada inválida.\n");
             pause_screen();
