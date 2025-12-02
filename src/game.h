@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <stdbool.h>
-#include <stddef.h>
+
 #include "board.h"
 #include "fleet.h"
 
@@ -38,7 +38,7 @@ void destroy_game(Game *g);
 //Funções de jogo (tiros, turnos, vitória)
 
 int fire_shot(Game *g, int shooter, int row, int col,
-              char *result_text, size_t bufsize);
+              char *result_text, unsigned int bufsize);
 
 // Checa se o jogador teve toda a frota destruída
 bool is_fleet_destroyed(Player *p);
