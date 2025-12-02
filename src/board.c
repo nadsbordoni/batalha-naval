@@ -82,8 +82,9 @@ void print_board(Board *b, bool showShips) {
     }
 }
 
-static bool in_bounds(Board *b, int row, int col) {
-    return b && row >= 0 && row < b->rows && col >= 0 && col < b->cols;
+bool in_bounds(Board *b, int row, int col) {
+    if (!b) return false;
+    return row >= 0 && row < b->rows && col >= 0 && col < b->cols;
 }
 
 bool can_place_ship(Board *b, int row, int col, int length, Orientation orient) {
