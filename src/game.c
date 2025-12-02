@@ -186,7 +186,7 @@ bool auto_place_player_fleet(Player *p) {
     return ok;
 }
 
-int fire_shot(Game *g, int shooter, int row, int col, char *result_text, size_t bufsize) {
+int fire_shot(Game *g, int shooter, int row, int col, char *result_text, unsigned int bufsize) {
     if (!g) return -1;
     if (shooter != 1 && shooter != 2) return -1;
 
