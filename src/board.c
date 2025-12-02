@@ -19,7 +19,7 @@ Board *create_board(int size) {
     b->rows = size;
     b->cols = size;
 
-    b->cells = calloc((size_t)size * (size_t)size, sizeof(Cell));
+    b->cells = calloc((unsigned int)size * (unsigned int)size, sizeof(Cell));
     if (!b->cells) {
         free(b);
         return NULL;
