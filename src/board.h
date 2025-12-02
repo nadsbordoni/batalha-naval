@@ -46,6 +46,8 @@ void destroy_board(Board *b);
 Cell *get_cell(Board *b, int row, int col);
 void print_board(Board *b, bool showShips);
 
+bool in_bounds(Board *b, int row, int col);
+
 // Funções para posicionamento de navios
 bool can_place_ship(Board *b, int row, int col, int length, Orientation orient);
 bool place_ship(Board *b, Fleet *fleet, int ship_index, int row, int col, Orientation orient);
