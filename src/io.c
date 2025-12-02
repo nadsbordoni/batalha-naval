@@ -73,6 +73,96 @@ int settings_menu(int *board_size) {
     return *board_size;
 }
 
+bool manual_place_player_fleet(Player *p) {
+    if (!p || !p->fleet || !p->board) return false;
+
+    // limpa tabuleiro (marca água / sem navio)
+    for (int r = 0; r < p->board->rows; r++) {
+        for (int c = 0; c < p->board->cols; c++) {
+            Cell *cell = get_cell(p->board, r, c);
+            if (cell) {
+                cell->state = WATER_CELL;
+                cell->ship_id = NO_SHIP_ID;
+            }
+        }
+    }
+
+    char entrada[64];
+
+    for (int s = 0; s < p->fleet->count; s++) {
+        Ship *ship = &p->fleet->ships[s];
+        ship->placed = 0;
+
+        bool placed = false;
+        while (!placed) {
+            clear_screen();
+            printf("Posicionamento manual - jogador %s\n", p->name);
+            printf("Colocando navio: %s (tamanho %d)\n\n", ship->name, ship->length);
+            printf("Tabuleiro atual:\n");
+            print_board(p->board, true);
+
+            printf("\nDigite coordenada inicial (ex: A5): ");
+            if (!fgets(entrada, sizeof(entrada), stdin)) return false;
+            entrada[strcspn(entrada, "\n")] = '\0';
+            if (strlen(entrada) == 0) {
+                printf("Entrada vazia. Tente novamente.\n");
+                pause_screen();
+                continue;
+            }
+
+            int row, col;
+            if (!parse_coord(entrada, &row, &col)) {
+                printf("Coordenada inválida. Formato esperado: letra+numero (ex: A5).\n");
+                pause_screen();
+                continue;
+            }
+
+            if (!in_bounds(p->board, row, col)) {
+                printf("Coordenada fora do tabuleiro.\n");
+                pause_screen();
+                continue;
+            }
+
+            printf("Orientação - (H)orizontal ou (V)ertical? ");
+            if (!fgets(entrada, sizeof(entrada), stdin)) return false;
+            entrada[strcspn(entrada, "\n")] = '\0';
+            if (strlen(entrada) == 0) {
+                printf("Orientação vazia. Tente novamente.\n");
+                pause_screen();
+                continue;
+            }
+
+            char ch = toupper((unsigned char)entrada[0]);
+            Orientation orient;
+            if (ch == 'H') orient = ORIENT_H;
+            else if (ch == 'V') orient = ORIENT_V;
+            else {
+                printf("Orientação inválida. Use H ou V.\n");
+                pause_screen();
+                continue;
+            }
+
+            if (!can_place_ship(p->board, row, col, ship->length, orient)) {
+                printf("Não é possível posicionar aí (sobreposição ou fora do tabuleiro).\n");
+                pause_screen();
+                continue;
+            }
+
+            if (!place_ship(p->board, p->fleet, s, row, col, orient)) {
+                printf("Falha ao posicionar navio. Tente outra posição.\n");
+                pause_screen();
+                continue;
+            }
+
+            placed = true;
+            printf("Navio %s posicionado.\n", ship->name);
+            pause_screen();
+        }
+    }
+
+    return true;
+}
+
 void play_game(int board_size) {
     clear_screen();
 
@@ -87,14 +177,66 @@ void play_game(int board_size) {
     if (!fgets(nome2, sizeof(nome2), stdin)) return;
     nome2[strcspn(nome2, "\n")] = '\0';
 
-    Game *g = create_game(nome1, nome2, board_size, true);
-    if (!g) {
-        printf("Erro ao criar o jogo.\n");
+  /* perguntar modo de posicionamento */
+char modo_buf[8];
+printf("Posicionamento (M)anual ou (A)utomático? [A]: ");
+if (!fgets(modo_buf, sizeof(modo_buf), stdin)) return;
+modo_buf[strcspn(modo_buf, "\n")] = '\0';
+char modo = (modo_buf[0] == '\0') ? 'A' : toupper((unsigned char)modo_buf[0]);
+
+/* criar jogo sem auto-place para termos controle */
+Game *g = create_game(nome1, nome2, board_size, false);
+if (!g) {
+    printf("Erro ao criar o jogo.\n");
+    pause_screen();
+    return;
+}
+
+if (modo == 'A') {
+    if (!auto_place_player_fleet(&g->p1) || !auto_place_player_fleet(&g->p2)) {
+        printf("Falha ao posicionar automaticamente as frotas.\n");
+        destroy_game(g);
+        pause_screen();
+        return;
+    }
+    printf("\nFrotas posicionadas automaticamente.\n");
+    pause_screen();
+} else {
+    /* Manual para jogador 1 */
+    printf("\nJogador %s - posicionamento manual.\n", g->p1.name);
+    pause_screen();
+    if (!manual_place_player_fleet(&g->p1)) {
+        printf("Falha no posicionamento manual do jogador 1.\n");
+        destroy_game(g);
         pause_screen();
         return;
     }
 
-    printf("\nFrotas posicionadas automaticamente.\n");
+    /* Pergunta se o jogador 2 quer manual também */
+    char buf2[8];
+    printf("Jogador %s quer posicionar manualmente também? (S/N) [N]: ", g->p2.name);
+    if (!fgets(buf2, sizeof(buf2), stdin)) { destroy_game(g); return; }
+    buf2[strcspn(buf2, "\n")] = '\0';
+    char choice2 = (buf2[0] == '\0') ? 'N' : toupper((unsigned char)buf2[0]);
+
+    if (choice2 == 'S') {
+        printf("\nJogador %s - posicionamento manual.\n", g->p2.name);
+        pause_screen();
+        if (!manual_place_player_fleet(&g->p2)) {
+            printf("Falha no posicionamento manual do jogador 2.\n");
+            destroy_game(g);
+            pause_screen();
+            return;
+        }
+    } else {
+        if (!auto_place_player_fleet(&g->p2)) {
+            printf("Falha ao posicionar automaticamente o jogador 2.\n");
+            destroy_game(g);
+            pause_screen();
+            return;
+        }
+    }
+}
     pause_screen();
 
     while (!g->game_over) {
